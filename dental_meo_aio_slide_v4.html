@@ -33,27 +33,31 @@ section.slide {
   overflow-x: hidden;
   flex-shrink: 0;
   padding-top: 120px;
-  padding-bottom: 100px;
+  padding-bottom: 80px;
   scroll-behavior: smooth;
   box-sizing: border-box;
+  scrollbar-width: none;
 }
+section.slide::-webkit-scrollbar { display: none; }
 
 /* スライドナビゲーション */
 #slide-nav {
   position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
   z-index: 9999;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 40px;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
   padding: 10px 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 -2px 16px rgba(0,0,0,0.10);
+  border-top: 1px solid #eee;
+  height: 60px;
+  box-sizing: border-box;
 }
 .slide-nav-btn {
   background: var(--grad);
@@ -127,24 +131,24 @@ nav {
 
 /* ===== HERO ===== */
 #hero {
-  padding: 160px 20px 80px;
+  padding: 20px 20px 40px;
   background: linear-gradient(160deg, #fff 0%, #fff5f8 50%, #fff8f0 100%);
   text-align: center;
 }
 .hero-badge {
   display: inline-block; background: var(--grad); color: #fff;
   font-size: 0.8rem; font-weight: 700; padding: 6px 18px;
-  border-radius: 20px; letter-spacing: 0.08em; margin-bottom: 18px;
+  border-radius: 20px; letter-spacing: 0.08em; margin-bottom: 12px;
 }
-#hero h1 { font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.35; margin-bottom: 10px; }
+#hero h1 { font-size: clamp(1.5rem, 3.5vw, 2.3rem); font-weight: 900; line-height: 1.3; margin-bottom: 8px; }
 #hero h1 span {
   background: var(--grad-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 #hero .hero-sub-title {
-  font-size: clamp(0.95rem, 2vw, 1.2rem); font-weight: 700; color: #555;
-  margin-bottom: 20px; line-height: 1.7;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem); font-weight: 700; color: #555;
+  margin-bottom: 12px; line-height: 1.6;
 }
-#hero p.sub { font-size: 1rem; color: #555; margin-bottom: 36px; line-height: 2; }
+#hero p.sub { font-size: 0.9rem; color: #555; margin-bottom: 20px; line-height: 1.8; }
 .btn-primary {
   display: inline-block; background: var(--grad); color: #fff;
   padding: 16px 40px; border-radius: 40px; font-size: 1rem; font-weight: 700;
@@ -158,19 +162,19 @@ nav {
   text-decoration: none; margin: 6px;
 }
 .hero-kpis {
-  display: flex; justify-content: center; gap: 40px; margin-top: 40px;
+  display: flex; justify-content: center; gap: 40px; margin-top: 20px;
   flex-wrap: wrap;
 }
 .kpi-card { text-align: center; }
 .kpi-card .num {
-  font-size: 2.8rem; font-weight: 900;
+  font-size: 2.4rem; font-weight: 900;
   background: var(--grad-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.kpi-card .label { font-size: 0.85rem; color: #666; margin-top: 4px; }
+.kpi-card .label { font-size: 0.82rem; color: #666; margin-top: 4px; }
 
 /* ===== SECTION BASE ===== */
 section { padding: 0 20px; }
-.container { max-width: 960px; margin: 0 auto; padding-top: 40px; padding-bottom: 40px; }
+.container { max-width: 960px; margin: 0 auto; padding-top: 20px; padding-bottom: 20px; }
 .section-label {
   display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em;
   text-transform: uppercase; color: var(--pink); margin-bottom: 14px;
@@ -718,7 +722,7 @@ footer {
   .mappy-features { grid-template-columns: repeat(2, 1fr); }
   .effect-circle { width: 120px; height: 120px; }
   .rev-row { grid-template-columns: 1fr; }
-  #slide-nav { bottom: 12px; padding: 8px 14px; gap: 10px; }
+  #slide-nav { height: 52px; padding: 8px 14px; gap: 10px; }
 }
 </style>
 </head>
@@ -1701,6 +1705,20 @@ nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.1); background: rgba(255,255,
 <div id="progress-bar"></div>
 
 <script>
+// ===== ナビ高さに合わせてスライドのpadding-topを動的に設定 =====
+function adjustSlideLayout() {
+  const nav = document.getElementById('main-nav');
+  const slideNav = document.getElementById('slide-nav');
+  const navH = nav ? nav.getBoundingClientRect().height : 100;
+  const slideNavH = slideNav ? slideNav.getBoundingClientRect().height : 60;
+  document.querySelectorAll('section.slide').forEach(s => {
+    s.style.paddingTop = (navH + 8) + 'px';
+    s.style.paddingBottom = (slideNavH + 8) + 'px';
+  });
+}
+window.addEventListener('load', adjustSlideLayout);
+window.addEventListener('resize', adjustSlideLayout);
+
 // ===== SLIDE SYSTEM =====
 const wrapper = document.getElementById('slides-wrapper');
 const slides = document.querySelectorAll('section.slide');
